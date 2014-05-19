@@ -3,7 +3,7 @@
 # Options
 # User for which the domain will be set up and the domain that needs to be set up
 user=ubuntu
-domain=abc.com
+domain=abc
 
 # Create public_html directory
 mkdir /home/$user/public_html
@@ -14,8 +14,8 @@ cat <<EOF > /etc/apache2/sites-available/$domain
         ServerAdmin webmaster@localhost
  
         DocumentRoot /home/$user/public_html
-        ServerName $domain
-        ServerAlias www.$domain
+        ServerName $domain.com
+        ServerAlias www.$domain.com
  
         <Directory />
                 Options FollowSymLinks

@@ -23,11 +23,8 @@ aptitude -y install php5 libapache2-mod-php5 php-apc php5-mysql php5-dev php5-cu
 # Install OpenSSL
 # apt-get -y install openssl
 
-# Install sendmail
-aptitude -y install sendmail
-
-# Enable mod_rewrite  
-a2enmod rewrite
+# Enable apache required modules
+a2enmod rewrite actions alias
 
 # Enable SSL
 # a2enmod ssl

@@ -12,54 +12,35 @@ mkdir /home/$user/public_html
 cat <<EOF > /etc/apache2/sites-available/$domain.conf
 <VirtualHost *:80>
         ServerAdmin webmaster@localhost
- 
+
         DocumentRoot /home/$user/public_html
         ServerName $domain
         ServerAlias www.$domain
- 
-        <Directory />
-                Options FollowSymLinks
-                AllowOverride All
-        </Directory>
-        <Directory /var/www/>
+
+        <Directory /home/$user/public_html/>
                 Options Indexes FollowSymLinks MultiViews
-                AllowOverride None
+                AllowOverride All
                 Order allow,deny
                 allow from all
+                <IfModule mod_php5.c>
+                        php_admin_flag engine on
+                </IfModule>
         </Directory>
- 
-        ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
-        <Directory "/usr/lib/cgi-bin">
-                AllowOverride None
-                Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
-                Order allow,deny
-                Allow from all
-        </Directory>
- 
-        ErrorLog ${APACHE_LOG_DIR}/error.log
- 
+
         # Possible values include: debug, info, notice, warn, error, crit,
         # alert, emerg.
         LogLevel error
- 
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
         CustomLog ${APACHE_LOG_DIR}/access.log combined
- 
-    Alias /doc/ "/usr/share/doc/"
-    <Directory "/usr/share/doc/">
-        Options Indexes MultiViews FollowSymLinks
-        AllowOverride None
-        Order deny,allow
-        Deny from all
-        Allow from 127.0.0.0/255.0.0.0 ::1/128
-    </Directory>
- 
+
 </VirtualHost>
 EOF
 
 # Write some php in the demo site
 cat <<EOF > /home/$user/public_html/index.php
 <?php
-echo 'Je Baat !!';
+echo 'PHP is working !!';
 ?>
 EOF
  

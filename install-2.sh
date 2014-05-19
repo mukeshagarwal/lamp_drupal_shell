@@ -3,19 +3,19 @@
 # Options
 # User for which the domain will be set up and the domain that needs to be set up
 user=ubuntu
-domain=abc
+domain=abc.com
 
 # Create public_html directory
 mkdir /home/$user/public_html
 
 # Create the virtual host file
-cat <<EOF > /etc/apache2/sites-available/$domain
+cat <<EOF > /etc/apache2/sites-available/$domain.conf
 <VirtualHost *:80>
         ServerAdmin webmaster@localhost
  
         DocumentRoot /home/$user/public_html
-        ServerName $domain.com
-        ServerAlias www.$domain.com
+        ServerName $domain
+        ServerAlias www.$domain
  
         <Directory />
                 Options FollowSymLinks

@@ -3,6 +3,7 @@
 # Options
 # Root password for MySQL
 MYSQL_ROOT_PASSWORD=abcd1234
+user=ubuntu
 
 # First uninstall any unnecessary packages and ensure that aptitude is installed.
 apt-get update
@@ -26,8 +27,11 @@ aptitude -y install php5 libapache2-mod-php5 php-apc php5-mysql php5-dev php5-cu
 # apt-get -y install openssl
 
 # Enable apache required modules
-a2enmod rewrite actions alias
+a2enmod rewrite actions alias userdir
 
 # Enable SSL
 # a2enmod ssl
 
+sh /home/$user/lamp_drupal_shell/install-2.sh
+sh /home/$user/lamp_drupal_shell/install-3.sh
+sh /home/$user/lamp_drupal_shell/install-4.sh

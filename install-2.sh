@@ -5,6 +5,36 @@
 user=ubuntu
 domain=abc.com
 
+# Update the userdir.conf file
+cat <<EOF > /etc/apache2/mods-enabled/userdir.conf
+<IfModule mod_userdir.c>
+        UserDir public_html
+        UserDir disabled root
+	UserDir enabled $user
+ 
+        <Directory /home/*/public_html>
+		AllowOverride All
+		Options MultiViews Indexes SymLinksIfOwnerMatch
+		<Limit GET POST OPTIONS>
+			# Apache <= 2.2:
+		        Order allow,deny
+		        Allow from all
+ 
+		        # Apache >= 2.4:
+		        #Require all granted
+		</Limit>
+		<LimitExcept GET POST OPTIONS>
+			# Apache <= 2.2:
+		        Order deny,allow
+		        Deny from all
+ 
+			# Apache >= 2.4:
+			#Require all denied
+		</LimitExcept>
+        </Directory>
+</IfModule>
+EOF
+
 # Create public_html directory
 mkdir /home/$user/public_html
 

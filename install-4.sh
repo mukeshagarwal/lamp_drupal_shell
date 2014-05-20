@@ -46,7 +46,7 @@ tar -xvf /home/$user/tmp/$project_files -C /home/$user/public_html/$project_dir/
 # Create a databse
 #mysql -u$db_user -p$db_pass -e "create database $db_name;"
 gunzip /home/$user/tmp/$project_db
-mysqldump -u$db_user -p$db_pass $db_name < /home/$user/tmp/$project_db_dump
+mysql -u$db_user -p$db_pass $db_name < /home/$user/tmp/$project_db_dump
 
 # Update the settings.php file
 

@@ -9,6 +9,8 @@ apt-get update
 apt-get -y install aptitude
 aptitude -y install nano
 
+# Install wget
+apt-get -y install wget
 # Install MySQL
 echo "mysql-server mysql-server/root_password password $MYSQL_ROOT_PASSWORD" | debconf-set-selections
 echo "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASSWORD" | debconf-set-selections

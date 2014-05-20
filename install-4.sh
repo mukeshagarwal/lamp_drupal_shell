@@ -12,6 +12,7 @@ project_remote_user=ubuntu
 project_remote_ip=ip-172-31-30-93
 project_files=files.tar.gz
 project_db=kabotoor.sql.gz
+project_db_dump=kabotoor.sql
 server_conf=/etc/apache2/sites-available/$domain
 secure_key=/home/$user/.ssh/kabootr-dev.pem
 project_branch=develop
@@ -43,8 +44,9 @@ wget -o /home/$user/tmp/$project_db $db_url
 tar -xvf /home/$user/tmp/$project_files -C /home/$user/public_html/$project_dir/sites/default/
 
 # Create a databse
-mysql -u$db_user -p$db_pass -e "create database $db_name;"
-mysql -u$db_user -p$dn_pass $db_name < /home/$user/tmp/$project_db
+#mysql -u$db_user -p$db_pass -e "create database $db_name;"
+gunzip /home/$user/tmp/$project_db
+mysqldump -u$db_user -p$db_pass $db_name < /home/$user/tmp/$project_db_dump
 
 # Update the settings.php file
 

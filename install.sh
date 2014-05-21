@@ -5,29 +5,29 @@
 user=ubuntu
 domain=abc.com
 php_ini_dir="/etc/php5/apache2/php.ini"
-PHP_MEMORY_LIMIT=512M
+PHP_MEMORY_LIMIT=256M
 PHP_MAX_EXECUTION_TIME=60
 PHP_MAX_INPUT_TIME=300
 PHP_POST_MAX_SIZE=32M
 PHP_UPLOAD_MAX_FILESIZE=32M
 
-project_url=https://github.com/innoraft/kabootr 
-project_dir=kabootr
+project_url=git@github.com:cupertinoconsulting/gauss.git
+project_dir=gauss
 # user=ubuntu
 # project_dir=kabootr
 db_user=root
 db_pass=abcd1234
-db_name=kabootr
+db_name=gauss
 project_remote_user=ubuntu
-project_remote_ip=ip-172-31-30-93
+project_remote_ip=ip-54-204-133-118
 project_files=files.tar.gz
-project_db=kabotoor.sql.gz
-project_db_dump=kabotoor.sql
+project_db=gauss.sql.gz
+project_db_dump=gauss.sql
 server_conf=/etc/apache2/sites-available/$domain
-secure_key=/home/$user/.ssh/kabootr-dev.pem
+secure_key=/home/$user/.ssh/apitest.pem
 project_branch=develop
-files_url=
-db_url=
+files_url=http://api.transfuse.io/sites/default/files/05-21-2014_gauss-prod-files.tar.gz
+db_url=http://api.transfuse.io/sites/default/files/05-21-2014_gauss-prod-db.sql.gz
 
 # First uninstall any unnecessary packages and ensure that aptitude is installed.
 apt-get update
@@ -94,11 +94,11 @@ cat <<EOF > /etc/apache2/sites-available/$domain.conf
 <VirtualHost *:80>
         ServerAdmin webmaster@localhost
 
-        DocumentRoot /home/$user/public_html
+        DocumentRoot /home/$user/public_html/$project_dir
         ServerName $domain
         ServerAlias www.$domain
 
-        <Directory /home/$user/public_html/>
+        <Directory /home/$user/public_html/$project_dir/>
                 Options Indexes FollowSymLinks MultiViews
                 AllowOverride All
                 Order allow,deny
@@ -164,15 +164,15 @@ git clone $project_url $project_dir
 
 # Copy the db and files from remote and store in tmp folder
 mkdir /home/$user/tmp
-#scp -i $secure_key $project_remote_user@$project_remote_ip:$project_files /home/$user/tmp/
-#scp -i $secure_key $project_remote_user@$project_remote_ip:$project_db /home/$user/tmp/
+# scp -i $secure_key $project_remote_user@$project_remote_ip:/home/$project_remote_user/$project_files /home/$user/tmp/
+# scp -i $secure_key $project_remote_user@$project_remote_ip:/home/$project_remote_user/$project_db /home/$user/tmp/
 
-#Donwalod the fioles by wget
+#Donwalod the files by wget
 wget -o /home/$user/tmp/$project_files $files_url
 wget -o /home/$user/tmp/$project_db $db_url
 
 # Extract the files and copy to drupal files folder
-tar -xvf /home/$user/tmp/$project_files -C /home/$user/public_html/$project_dir/sites/default/
+tar -xzvf /home/$user/tmp/$project_files -C /home/$user/public_html/$project_dir/sites/default/
 
 # Create a databse
 mysql -u$db_user -p$db_pass -e "create database $db_name;"

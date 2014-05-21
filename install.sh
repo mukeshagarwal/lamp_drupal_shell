@@ -89,6 +89,8 @@ EOF
 # Create public_html directory
 mkdir /home/$user/public_html
 
+chown -R ubuntu:www-data /home/$user/public_html
+
 # Create the virtual host file
 cat <<EOF > /etc/apache2/sites-available/$domain.conf
 <VirtualHost *:80>
@@ -154,8 +156,7 @@ sleep 1
 postfix start
 
 # Clone the project in public_hrml directory
-cd /home/$user/public_html
-git clone $project_url $project_dir
+su $user -c 'cd /home/ubuntu/public_html; git clone git@github.com:cupertinoconsulting/gauss.git'
 
 # Pull the code form given branch
 # cd /home/$user/public_html/$project_dir

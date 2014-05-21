@@ -20,9 +20,9 @@ db_pass=abcd1234
 db_name=gauss
 project_remote_user=ubuntu
 project_remote_ip=ip-54-204-133-118
-project_files=files.tar.gz
-project_db=gauss.sql.gz
-project_db_dump=gauss.sql
+project_files=05-21-2014_gauss-prod-files.tar.gz
+project_db=05-21-2014_gauss-prod-db.sql.gz
+project_db_dump=05-21-2014_gauss-prod-db.sql
 server_conf=/etc/apache2/sites-available/$domain
 secure_key=/home/$user/.ssh/apitest.pem
 project_branch=develop
@@ -168,11 +168,12 @@ mkdir /home/$user/tmp
 # scp -i $secure_key $project_remote_user@$project_remote_ip:/home/$project_remote_user/$project_db /home/$user/tmp/
 
 #Donwalod the files by wget
-wget -o /home/$user/tmp/$project_files $files_url
-wget -o /home/$user/tmp/$project_db $db_url
+cd /home/$user/tmp
+wget $files_url
+wget $db_url
 
 # Extract the files and copy to drupal files folder
-tar -xzvf /home/$user/tmp/$project_files -C /home/$user/public_html/$project_dir/sites/default/
+tar -xvf /home/$user/tmp/$project_files -C /home/$user/public_html/$project_dir/sites/default/
 
 # Create a databse
 mysql -u$db_user -p$db_pass -e "create database $db_name;"

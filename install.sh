@@ -391,7 +391,7 @@ postfix start
 
 # Clone the project in public_hrml directory
 # su $user -c 'cd /home/ubuntu/public_html; git clone git@github.com:cupertinoconsulting/gauss.git'
-sudo -H -u $user bash -c 'cd /home/ubuntu/public_html; git clone git@github.com:cupertinoconsulting/gauss.git'
+sudo -H -u $user bash -c 'cd /home/ubuntu/public_html; git clone https://github.com/cupertinoconsulting/gauss.git'
 
 # Pull the code form given branch
 # cd /home/$user/public_html/$project_dir

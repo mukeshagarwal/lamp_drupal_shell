@@ -54,7 +54,7 @@ aptitude -y install php5 libapache2-mod-php5 php-apc php5-mysql php5-dev php5-cu
 # apt-get -y install openssl
 
 # Enable apache required modules
-a2enmod rewrite actions alias userdir
+a2enmod rewrite actions alias userdir headers
 
 # Enable SSL
 # a2enmod ssl
@@ -106,8 +106,7 @@ cat <<EOF > /etc/apache2/sites-available/$domain.conf
         <Directory /home/$user/public_html/$project_dir/>
                 Options Indexes FollowSymLinks MultiViews
                 AllowOverride All
-                Order allow,deny
-                allow from all
+                Require all granted
                 <IfModule mod_php5.c>
                         php_admin_flag engine on
                 </IfModule>
@@ -148,7 +147,7 @@ sed -i 's/^post_max_size.*/post_max_size = '${PHP_POST_MAX_SIZE}'/' $php_ini_dir
 sed -i 's/^upload_max_filesize.*/upload_max_filesize = '${PHP_UPLOAD_MAX_FILESIZE}'/' $php_ini_dir
 sed -i 's/^expose_php.*/expose_php = Off/' $php_ini_dir
 
-cat <<EOF > $apache_conf_dir
+cat <<EOF > /etc/apache2/apache2.conf
 # This is the main Apache server configuration file.  It contains the
 # configuration directives that give the server its instructions.
 # See http://httpd.apache.org/docs/2.4/ for detailed information about
@@ -577,6 +576,8 @@ DirectoryIndex index.php index.html index.htm
       Header set Content-Disposition attachment
 </FilesMatch>
 EOF
+
+chown ubuntu:www-data /home/$user/public_html/$project_dir/.htaccess
 
 # sh /home/$user/lamp_drupal_shell/install-2.sh
 # sh /home/$user/lamp_drupal_shell/install-3.sh

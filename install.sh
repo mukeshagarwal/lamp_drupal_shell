@@ -65,7 +65,7 @@ cat <<EOF > /etc/apache2/mods-enabled/userdir.conf
         UserDir public_html
         UserDir disabled root
   UserDir enabled $user
- 
+
         <Directory /home/*/public_html>
     AllowOverride All
     Options MultiViews Indexes SymLinksIfOwnerMatch
@@ -73,7 +73,7 @@ cat <<EOF > /etc/apache2/mods-enabled/userdir.conf
       # Apache <= 2.2:
             Order allow,deny
             Allow from all
- 
+
             # Apache >= 2.4:
             #Require all granted
     </Limit>
@@ -81,7 +81,7 @@ cat <<EOF > /etc/apache2/mods-enabled/userdir.conf
       # Apache <= 2.2:
             Order deny,allow
             Deny from all
- 
+
       # Apache >= 2.4:
       #Require all denied
     </LimitExcept>
@@ -130,10 +130,10 @@ echo 'PHP is working !!';
 EOF
 
 chown ubuntu:www-data /home/$user/public_html/index.php
- 
+
 # enabling site
 a2ensite $domain
- 
+
 # restarting apache
 service apache2 reload
 
@@ -420,7 +420,7 @@ mysql -u$db_user -p$db_pass $db_name < /home/$user/tmp/$project_db_dump
 
 php /home/$user/lamp_drupal_shell/update-settings.php $user $project_dir $db_user $db_pass $db_name
 
-# Correct the file permission of drupal 
+# Correct the file permission of drupal
 bash /home/$user/lamp_drupal_shell/fix-permissions.sh --drupal_path=/home/$user/public_html/$project_dir --drupal_user=$user
 
 #Setup htaccess file
@@ -430,7 +430,7 @@ cat <<EOF > /home/$user/public_html/$project_dir/.htaccess
 #
 
 # Protect files and directories from prying eyes.
-<FilesMatch "\.(engine|inc|info|install|make|module|profile|test|po|sh|.*sql|theme|tpl(\.php)?|xtmpl)$|^(\..*|Entries.*|Repository|Root|Tag|Template)$">
+<FilesMatch "\.(engine|inc|info|install|make|module|profile|test|po|sh|.*sql|theme|tpl(\.php)?|xtmpl)(~|\.sw[op]|\.bak|\.orig|\.save)?$|^(\..*|Entries.*|Repository|Root|Tag|Template)$|^#.*#$|\.php(~|\.sw[op]|\.bak|\.orig\.save)$">
   Order allow,deny
 </FilesMatch>
 
@@ -483,8 +483,16 @@ DirectoryIndex index.php index.html index.htm
 <IfModule mod_rewrite.c>
   RewriteEngine on
 
-  RewriteCond %{HTTP_HOST} ^hcltech.com$
-  RewriteRule (.*) http://www.hcltech.com/$1 [R=301,L]
+  # Set "protossl" to "s" if we were accessed via https://.  This is used later
+  # if you enable "www." stripping or enforcement, in order to ensure that
+  # you don't bounce between http and https.
+  RewriteRule ^ - [E=protossl]
+  RewriteCond %{HTTPS} on
+  RewriteRule ^ - [E=protossl:s]
+
+  # Make sure Authorization HTTP header is available to PHP
+  # even when running as CGI or FastCGI.
+  RewriteRule ^ - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
   # Block access to "hidden" directories whose names begin with a period. This
   # includes directories used by version control systems such as Subversion or
@@ -508,14 +516,15 @@ DirectoryIndex index.php index.html index.htm
   # To redirect all users to access the site WITH the 'www.' prefix,
   # (http://example.com/... will be redirected to http://www.example.com/...)
   # uncomment the following:
+  # RewriteCond %{HTTP_HOST} .
   # RewriteCond %{HTTP_HOST} !^www\. [NC]
-  # RewriteRule ^ http://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # RewriteRule ^ http%{ENV:protossl}://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
   #
   # To redirect all users to access the site WITHOUT the 'www.' prefix,
   # (http://www.example.com/... will be redirected to http://example.com/...)
   # uncomment the following:
   # RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
-  # RewriteRule ^ http://%1%{REQUEST_URI} [L,R=301]
+  # RewriteRule ^ http%{ENV:protossl}://%1%{REQUEST_URI} [L,R=301]
 
   # Modify the RewriteBase if you are using Drupal in a subdirectory or in a
   # VirtualDocumentRoot and the rewrite rules are not working properly.
@@ -526,16 +535,6 @@ DirectoryIndex index.php index.html index.htm
   # If your site is running in a VirtualDocumentRoot at http://example.com/,
   # uncomment the following line:
   # RewriteBase /
-
-  # RewriteCond %{REQUEST_URI} ^/rbtc-challenge* [OR]
-  # RewriteCond %{REQUEST_URI} ^/beyondthecontract-challenge*
-  # RewriteRule ^(.*)$ /hclmicro_1/*
-
-  # RewriteCond %{REQUEST_URI} ^/beyondthecontract-challenge$
-  # RewriteRule ^(.*)$ /hclmicro_1/index_1.html [L]
-
-  # RewriteCond %{REQUEST_URI} ^/rbtc-challenge-eligibility$
-  # RewriteRule ^(.*)$ /hclmicro_1/index_2.html [L]
 
   # Pass all requests not referring directly to files in the filesystem to
   # index.php. Clean URLs are handled in drupal_environment_initialize().
@@ -569,12 +568,6 @@ DirectoryIndex index.php index.html index.htm
     </FilesMatch>
   </IfModule>
 </IfModule>
-
-# For file force download
-<FilesMatch "\.(mov|mp3|pdf|mp4|avi|wmv)$">
-      ForceType application/octet-stream
-      Header set Content-Disposition attachment
-</FilesMatch>
 EOF
 
 chown ubuntu:www-data /home/$user/public_html/$project_dir/.htaccess

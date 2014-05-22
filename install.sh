@@ -14,7 +14,7 @@ PHP_MAX_INPUT_TIME=300
 PHP_POST_MAX_SIZE=32M
 PHP_UPLOAD_MAX_FILESIZE=32M
 
-project_url=git@github.com:cupertinoconsulting/gauss.git
+project_url=https://github.com/cupertinoconsulting/gauss.git
 project_dir=gauss
 # user=ubuntu
 # project_dir=kabootr

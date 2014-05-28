@@ -158,14 +158,14 @@ cat <<EOF > /etc/apache2/apache2.conf
 #
 # /etc/apache2/
 # |-- apache2.conf
-# | `--  ports.conf
+# | --  ports.conf
 # |-- mods-enabled
 # | |-- *.load
-# | `-- *.conf
+# | -- *.conf
 # |-- conf-enabled
-# | `-- *.conf
-#   `-- sites-enabled
-#   `-- *.conf
+# | -- *.conf
+#   -- sites-enabled
+#   -- *.conf
 #
 #
 # * apache2.conf is the main configuration file (this file). It puts the pieces

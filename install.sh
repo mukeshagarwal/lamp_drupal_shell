@@ -595,7 +595,7 @@ drush en memcache -y
 
 echo "$conf['cache_backends'][] = 'sites/all/modules/memcache/memcache.inc';" >> site/default/settings.php
 echo "$conf['cache_default_class'] = 'MemCacheDrupal';" >> site/default/settings.php
-$conf['cache_class_cache_form'] = 'DrupalDatabaseCache'; >> site/default/settings.php
+echo "$conf['cache_class_cache_form'] = 'DrupalDatabaseCache';" >> site/default/settings.php
 echo "$conf['memcache_key_prefix'] = $project_dir . '_mem_key';" >> site/default/settings.php
 
 

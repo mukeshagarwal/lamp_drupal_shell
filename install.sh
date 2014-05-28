@@ -575,3 +575,42 @@ chown ubuntu:www-data /home/$user/public_html/$project_dir/.htaccess
 # sh /home/$user/lamp_drupal_shell/install-2.sh
 # sh /home/$user/lamp_drupal_shell/install-3.sh
 # sh /home/$user/lamp_drupal_shell/install-4.sh
+
+#Install apc
+apt-get install make libpcre3-dev
+pecl install apc
+
+echo "extension = apc.so" >> /etc/php5/apache2/php.ini
+
+echo "apc.shm_size = 64" >> /etc/php5/apache2/php.ini
+echo "apc.stat = 0" >> /etc/php5/apache2/php.ini
+
+service apache2 start
+
+cp /usr/share/doc/php5-apcu /public_html/apc.php
+
+
+#Install memecache
+apt-get install memcached libmemcached-tools
+pecl install memcache
+
+echo "extension=memcache.so">> /etc/php5/conf.d/memcache.ini
+
+echo "memcache.hash_strategy=consistent">> /etc/php5/conf.d/memcache.ini
+
+sudo service memcached start
+sudo service apache2 restart
+
+
+
+#Configure Drupal for use of memcache
+cd /home/$user/public_html/$project_dir
+
+drush dl memcache -y
+drush en memcache -y
+
+echo "$conf['cache_backends'][] = 'sites/all/modules/memcache/memcache.inc';" >> site/default/settings.php
+echo "$conf['cache_default_class'] = 'MemCacheDrupal';" >> site/default/settings.php
+$conf['cache_class_cache_form'] = 'DrupalDatabaseCache'; >> site/default/settings.php
+echo "$conf['memcache_key_prefix'] = $project_dir . '_mem_key';" >> site/default/settings.php
+

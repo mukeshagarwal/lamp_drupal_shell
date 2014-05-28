@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Options
-# MYSQL_ROOT_PASSWORD=abcd1234
 user=ubuntu
 domain=abc.com
 
@@ -16,8 +15,6 @@ PHP_UPLOAD_MAX_FILESIZE=32M
 
 project_url=https://github.com/cupertinoconsulting/gauss.git
 project_dir=gauss
-# user=ubuntu
-# project_dir=kabootr
 db_user=root
 db_pass=abcd1234
 db_name=gauss
@@ -39,6 +36,7 @@ aptitude -y install nano
 
 # Install wget
 apt-get -y install wget
+
 # Install MySQL
 echo "mysql-server mysql-server/root_password password $db_pass" | debconf-set-selections
 echo "mysql-server mysql-server/root_password_again password $db_pass" | debconf-set-selections
@@ -50,14 +48,8 @@ aptitude -y install apache2
 # Install PHP5 support
 aptitude -y install php5 libapache2-mod-php5 php-apc php5-mysql php5-dev php5-curl php5-gd php-pear php5-mcrypt php5-xmlrpc
 
-# Install OpenSSL
-# apt-get -y install openssl
-
 # Enable apache required modules
 a2enmod rewrite actions alias userdir headers
-
-# Enable SSL
-# a2enmod ssl
 
 # Update the userdir.conf file
 cat <<EOF > /etc/apache2/mods-enabled/userdir.conf
@@ -136,8 +128,6 @@ a2ensite $domain
 
 # restarting apache
 service apache2 reload
-
-# require all for user directories in apache
 
 # Tweak php.ini based on input in options.conf
 sed -i 's/^max_execution_time.*/max_execution_time = '${PHP_MAX_EXECUTION_TIME}'/' $php_ini_dir
@@ -389,13 +379,7 @@ sleep 1
 postfix start
 
 # Clone the project in public_hrml directory
-# su $user -c 'cd /home/ubuntu/public_html; git clone git@github.com:cupertinoconsulting/gauss.git'
 sudo -H -u $user bash -c 'cd /home/ubuntu/public_html; git clone https://github.com/cupertinoconsulting/gauss.git'
-
-# Pull the code form given branch
-# cd /home/$user/public_html/$project_dir
-# git pull origin $project_branch
-# git checkout develop
 
 # Copy the db and files from remote and store in tmp folder
 mkdir /home/$user/tmp
@@ -417,13 +401,12 @@ mysql -u$db_user -p$db_pass $db_name < /home/$user/tmp/$project_db_dump
 
 
 # Update the settings.php file
-
 php /home/$user/lamp_drupal_shell/update-settings.php $user $project_dir $db_user $db_pass $db_name
 
 # Correct the file permission of drupal
 bash /home/$user/lamp_drupal_shell/fix-permissions.sh --drupal_path=/home/$user/public_html/$project_dir --drupal_user=$user
 
-#Setup htaccess file
+# Setup htaccess file
 cat <<EOF > /home/$user/public_html/$project_dir/.htaccess
 #
 # Apache/PHP/Drupal settings:
@@ -572,6 +555,7 @@ EOF
 
 chown ubuntu:www-data /home/$user/public_html/$project_dir/.htaccess
 
+
 # sh /home/$user/lamp_drupal_shell/install-2.sh
 # sh /home/$user/lamp_drupal_shell/install-3.sh
 # sh /home/$user/lamp_drupal_shell/install-4.sh
@@ -613,4 +597,8 @@ echo "$conf['cache_backends'][] = 'sites/all/modules/memcache/memcache.inc';" >>
 echo "$conf['cache_default_class'] = 'MemCacheDrupal';" >> site/default/settings.php
 $conf['cache_class_cache_form'] = 'DrupalDatabaseCache'; >> site/default/settings.php
 echo "$conf['memcache_key_prefix'] = $project_dir . '_mem_key';" >> site/default/settings.php
+
+
+# install drush
+apt-get -y install drush
 

@@ -1,7 +1,8 @@
 #!/bin/bash
 
 php_ini_dir="/etc/php5/apache2/php.ini"
-project_dir = $1
+user = $1
+project_dir = $2
 
 #Install apc
 apt-get install make libpcre3-dev

@@ -14,6 +14,7 @@ db_url = $10
 project_remote_ip = $11
 project_remote_user = $12
 secure_key = $13
+user = $14
 
 # Clone the project in public_hrml directory
 sudo -H -u $user bash -c 'cd /home/$user/public_html; git clone project_url $project_dir'

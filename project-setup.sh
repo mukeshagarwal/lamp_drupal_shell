@@ -16,7 +16,7 @@ secure_key=$12
 user=$13
 
 # Clone the project in public_hrml directory
-sudo -H -u $user bash -c 'cd /home/$user/public_html; git clone project_url $project_dir'
+sudo -H -u $user bash -c 'cd /home/$user/public_html; git clone $project_url $project_dir'
 
 if [ $branch = Y ] || [ $branch = y ] then
    #Pull the code form given branch
@@ -28,13 +28,15 @@ fi
 # Copy the db and files from remote and store in tmp folder
 mkdir /home/$user/tmp
 
-if [ $method = w ] || [ $method = W ] then
+if [ $method = 'w' ] || [ $method = W ] 
+then
     #Donwalod the files by wget
      cd /home/$user/tmp
      wget $files_url
      wget $db_url
  else
-	if [$secure_key == 'n' || $secure_key == 'N']; then
+	if [ $secure_key = n ] || [ $secure_key = N]
+	 then
      	   scp $project_remote_user@$project_remote_ip:/home/$project_remote_user/$files_url /home/$user/tmp/
      	   scp $secure_key $project_remote_user@$project_remote_ip:/home/$project_remote_user/$db_url /home/$user/tmp/
 	else

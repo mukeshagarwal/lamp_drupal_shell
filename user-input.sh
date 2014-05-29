@@ -9,7 +9,7 @@ read -p "Enter Project root directory [drupal or drupal/docroot]:	" project_dir
 echo "Now Setting up project"
 # Take proejct url
 #read -p "Give the git url of your project:    " project_url
-project_branch=''
+project_branch='none'
 read -p "Should code be pulled from other branch: [Y/N]   " branch
 if [ $branch = Y ] || [ $branch = y ]
  then 
@@ -20,9 +20,9 @@ echo "Database Credentials"
 read -p "Name of database:    " db_name
 read -p "Password of database of this machine:    " db_pass
 
-project_remote_ip=''
-project_remote_user=''
-secure_key=''
+project_remote_ip='none'
+project_remote_user='none'
+secure_key='none'
 read -p "Files and db should download by wget or ssh method: [W/S]"   method
 if [ $method = 'w' ] || [ $method = W ]; then
     read -p "Files url:   " files_url

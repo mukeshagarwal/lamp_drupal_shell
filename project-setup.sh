@@ -1,25 +1,24 @@
 #!/bin/bash
 
 echo "Now Setting up project"
-project_url = $1
-branch = $2
-project_branch = $3
-project_dir = $4
-db_name = $5
-db_user = $6
-db_pass = $7
-method = $8
-files_url = $9
-db_url = $10
-project_remote_ip = $11
-project_remote_user = $12
-secure_key = $13
-user = $14
+project_url=$1
+branch=$2
+project_branch=$3
+project_dir=$4
+db_name=$5
+db_pass=$6
+method=$7
+files_url=$8
+db_url=$9
+project_remote_ip=$10
+project_remote_user=$11
+secure_key=$12
+user=$13
 
 # Clone the project in public_hrml directory
 sudo -H -u $user bash -c 'cd /home/$user/public_html; git clone project_url $project_dir'
 
-if [$branch =='Y' || $branch == 'y' ]; then
+if [ $branch = Y ] || [ $branch = y ] then
    #Pull the code form given branch
    cd /home/$user/public_html/$project_dir
    git pull origin $project_branch
@@ -29,7 +28,7 @@ fi
 # Copy the db and files from remote and store in tmp folder
 mkdir /home/$user/tmp
 
-if [$method == 'w' || $method == 'W']; then
+if [ $method = w ] || [ $method = W ] then
     #Donwalod the files by wget
      cd /home/$user/tmp
      wget $files_url
@@ -47,7 +46,7 @@ fi
 tar -xvf /home/$user/tmp/$project_files -C /home/$user/public_html/$project_dir/sites/default/
 
 # Create a databse
-mysql -u$db_user -p$db_pass -e "create database $db_name;"
+mysql -uroot -p$db_pass -e "create database $db_name;"
 gunzip /home/$user/tmp/$project_db
 mysql -u$db_user -p$db_pass $db_name < /home/$user/tmp/$project_db_dump
 

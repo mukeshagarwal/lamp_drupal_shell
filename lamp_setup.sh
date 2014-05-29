@@ -10,10 +10,10 @@ PHP_POST_MAX_SIZE=32M
 PHP_UPLOAD_MAX_FILESIZE=32M
 
 # Server configuration
-user = $1
-domain = $2
-db_pass = $3
-project_dir = $4
+user=$1
+domain=$2
+db_pass=$3
+project_dir=$4
 
 # First uninstall any unnecessary packages and ensure that aptitude is installed.
 apt-get update

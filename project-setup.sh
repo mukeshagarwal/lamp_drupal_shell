@@ -16,7 +16,7 @@ secure_key=$12
 user=$13
 
 # Clone the project in public_hrml directory
-sudo -H -u $user bash -c cd "git clone $project_url /home/$user/public_html/$project_dir"
+sudo -H -u $user bash -c "cd /home/$user/public_html; git clone $project_url"
 
 if [ $branch = Y ] || [ $branch = y ]
   then

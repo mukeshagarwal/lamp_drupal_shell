@@ -47,16 +47,19 @@ if [ $method = 'w' ] || [ $method = W ]
 fi
 
 # Extract the files and copy to drupal files folder
+project_files=`basename $files_url`
 tar -xvf /home/$user/tmp/$project_files -C /home/$user/public_html/$project_dir/sites/default/
 
 # Create a databse
 mysql -uroot -p$db_pass -e "create database $db_name;"
+project_db=`basename $db_url`
+
 gunzip /home/$user/tmp/$project_db
-mysql -u$db_user -p$db_pass $db_name < /home/$user/tmp/$project_db_dump
+mysql -uroot -p$db_pass $db_name < /home/$user/tmp/$project_db
 
 
 # Update the settings.php file
-php /home/$user/lamp_drupal_shell/update-settings.php $user $project_dir $db_user $db_pass $db_name
+php /home/$user/lamp_drupal_shell/update-settings.php $user $project_dir root $db_pass $db_name
 
 # Correct the file permission of drupal
 bash /home/$user/lamp_drupal_shell/fix-permissions.sh --drupal_path=/home/$user/public_html/$project_dir --drupal_user=$user

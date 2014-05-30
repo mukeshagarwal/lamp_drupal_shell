@@ -4,15 +4,14 @@
 read -p "Enter Web user who will run web server:    " user
 read -p "Enter domain for project:    " domain
 read -p "Enter password for mysql root user:    " db_pass
-read -p "Enter Project root directory [drupal or drupal/docroot]:	" project_dir	
+read -p "Enter Project root directory [drupal or drupal/docroot]:	" project_dir
 
-echo "Now Setting up project"
 # Take proejct url
-#read -p "Give the git url of your project:    " project_url
+read -p "Give the git url of your project:    " project_url
 project_branch='none'
 read -p "Should code be pulled from other branch: [Y/N]   " branch
 if [ $branch = Y ] || [ $branch = y ]
- then 
+ then
  read -p  "Specify branch:	" 	project_branch
 fi
 
@@ -38,11 +37,12 @@ fi
 
 
 # Run Script for setting up LAMP
-sh ~/lamp_drupal_shell/lamp-setup.sh $user $domain $db_pass $project_dir	
+sh ~/lamp_drupal_shell/lamp-setup.sh $user $domain $db_pass $project_dir
 # Run script for setting up project
-sh ~/lamp_drupal_shell/project-setup.sh $project_url $branch $project_branch $project_dir $db_name $db_pass $method $files_url $db_url $project_remote_ip $project_remote_user $secure_key $user
+sh ~/lamp_drupal_shell/project-setup.sh $project_url $branch $project_branch $project_dir $db_name
+ $db_pass $method $files_url $db_url $project_remote_ip $project_remote_user $secure_key $user
 # RUn script for setting post fix mail server
 sh ~/lamp_drupal_shell/mailserver-postfix.sh
 
 # Optimize server by installing apc and memcache
-sh ./server-optimize.sh $user $project_dir
+sh ~/lamp_drupal_shell/server-optimize.sh $user $project_dir
